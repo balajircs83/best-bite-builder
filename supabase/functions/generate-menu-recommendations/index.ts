@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -37,14 +37,15 @@ serve(async (req) => {
 
     Make the dishes authentic and appropriate for the restaurant name and menu type. Ensure variety in cuisines, ratings, and review counts.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${openRouterApiKey}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'http://localhost:5173', // Change to your deployed domain if needed
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'tngtech/deepseek-r1t2-chimera:free', // Correct DeepSeek model name from OpenRouter
         messages: [
           { role: 'system', content: 'You are a helpful assistant that generates realistic restaurant menu recommendations. Always respond with valid JSON only.' },
           { role: 'user', content: prompt }
@@ -54,7 +55,20 @@ serve(async (req) => {
     });
 
     const data = await response.json();
-    const generatedText = data.choices[0].message.content;
+    console.log("OpenRouter response:", data);
+
+    if (!data.choices || !Array.isArray(data.choices) || !data.choices[0]?.message?.content) {
+      console.error("OpenRouter API error:", data);
+      throw new Error(data.error?.message || JSON.stringify(data));
+    }
+
+    let generatedText = data.choices[0].message.content;
+
+    // If the response is wrapped in a markdown code block, extract the JSON
+    const codeBlockMatch = generatedText.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+    if (codeBlockMatch) {
+      generatedText = codeBlockMatch[1];
+    }
 
     // Parse the JSON response from OpenAI
     let dishes;
