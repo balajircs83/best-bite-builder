@@ -2,7 +2,16 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import SearchForm from "@/components/SearchForm";
 import SearchResults from "@/components/SearchResults";
-import { getDishesWithReviews, DishWithReviews } from "@/data/dummyData";
+import { supabase } from "@/integrations/supabase/client";
+
+interface DishWithReviews {
+  id: string;
+  name: string;
+  description: string;
+  averageRating: number;
+  reviewCount: number;
+  reviewSummary: string;
+}
 
 const Index = () => {
   const [dishes, setDishes] = useState<DishWithReviews[]>([]);
@@ -15,12 +24,23 @@ const Index = () => {
     setHasSearched(true);
     setSearchParams({ restaurant: restaurantName, menuType });
     
-    // Simulate API call delay for better UX
-    setTimeout(() => {
-      const results = getDishesWithReviews(restaurantName, menuType);
-      setDishes(results);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-menu-recommendations', {
+        body: { restaurantName, menuType }
+      });
+
+      if (error) {
+        console.error('Error generating recommendations:', error);
+        setDishes([]);
+      } else {
+        setDishes(data.dishes || []);
+      }
+    } catch (error) {
+      console.error('Error calling function:', error);
+      setDishes([]);
+    } finally {
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
