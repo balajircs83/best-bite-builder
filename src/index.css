@@ -1,40 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Best Menu Generator Design System - Clean, accessible, and modern */
 
 @layer base {
   :root {
+    /* Core Brand Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 220 13% 13%;
 
+    /* Card and Surface Colors */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 220 13% 13%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 220 13% 13%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Blue Theme */
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 217 91% 55%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Green Accent */
+    --secondary: 142 76% 36%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 142 76% 31%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Neutral Colors */
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 220 14% 96%;
+    --accent-foreground: 220 13% 13%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    /* Interactive Elements */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 217 91% 60%;
+
+    /* Restaurant Card Colors */
+    --dish-card: 0 0% 100%;
+    --dish-card-border: 220 13% 91%;
+    --rating-star: 38 92% 50%;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 13% 13% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 13% 13% / 0.1), 0 2px 4px -1px hsl(220 13% 13% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(220 13% 13% / 0.1), 0 4px 6px -2px hsl(220 13% 13% / 0.05);
+
+    --radius: 0.75rem;
 
     --radius: 0.5rem;
 
@@ -100,6 +127,30 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+}
+
+@layer components {
+  .search-container {
+    @apply max-w-2xl mx-auto space-y-6;
+  }
+  
+  .dish-card {
+    @apply bg-card border border-dish-card-border rounded-lg p-6 space-y-3 shadow-sm hover:shadow-md transition-shadow;
+  }
+  
+  .rating-stars {
+    @apply flex items-center space-x-1;
+  }
+  
+  .star-filled {
+    @apply text-rating-star;
+  }
+  
+  .star-empty {
+    @apply text-muted-foreground;
   }
 }
