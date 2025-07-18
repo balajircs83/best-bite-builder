@@ -17,18 +17,16 @@ const Index = () => {
   const [dishes, setDishes] = useState<DishWithReviews[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [searchParams, setSearchParams] = useState({ restaurant: "", menuType: "" });
+  const [searchParams, setSearchParams] = useState({ hotel: "", city: "", menuType: "" });
 
-  const handleSearch = async (restaurantName: string, menuType: string) => {
+  const handleSearch = async (hotelName: string, city: string, menuType: string) => {
     setIsLoading(true);
     setHasSearched(true);
-    setSearchParams({ restaurant: restaurantName, menuType });
-    
+    setSearchParams({ hotel: hotelName, city, menuType });
     try {
       const { data, error } = await supabase.functions.invoke('generate-menu-recommendations', {
-        body: { restaurantName, menuType }
+        body: { hotelName, city, menuType }
       });
-
       if (error) {
         console.error('Error generating recommendations:', error);
         setDishes([]);
@@ -52,7 +50,8 @@ const Index = () => {
         
         <SearchResults 
           dishes={dishes}
-          restaurantName={searchParams.restaurant}
+          hotelName={searchParams.hotel}
+          city={searchParams.city}
           menuType={searchParams.menuType}
           isLoading={isLoading}
           hasSearched={hasSearched}

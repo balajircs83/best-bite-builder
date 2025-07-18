@@ -12,7 +12,8 @@ interface Dish {
 
 interface SearchResultsProps {
   dishes: Dish[];
-  restaurantName: string;
+  hotelName: string;
+  city: string;
   menuType: string;
   isLoading?: boolean;
   hasSearched?: boolean;
@@ -20,7 +21,8 @@ interface SearchResultsProps {
 
 const SearchResults = ({ 
   dishes, 
-  restaurantName, 
+  hotelName, 
+  city, 
   menuType, 
   isLoading = false, 
   hasSearched = false 
@@ -50,7 +52,7 @@ const SearchResults = ({
               No reviews yet!
             </h3>
             <p className="text-muted-foreground">
-              Sorry, we couldn't find reviews for <strong>{restaurantName}</strong> in the <strong>{menuType}</strong> category.
+              Sorry, we couldn't find reviews for <strong>{hotelName}</strong> in <strong>{city}</strong> for the <strong>{menuType}</strong> category.
             </p>
             <p className="text-sm text-muted-foreground mt-2">
               Be the first to share your experience!
@@ -65,7 +67,7 @@ const SearchResults = ({
     <div className="search-container mt-12">
       <div className="text-center mb-8">
         <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-          Top Dishes at {restaurantName}
+          Top Dishes at {hotelName} {city && <span>in {city}</span>}
         </h2>
         <p className="text-muted-foreground">
           {menuType.charAt(0).toUpperCase() + menuType.slice(1)} • {dishes.length} recommendation{dishes.length !== 1 ? 's' : ''}

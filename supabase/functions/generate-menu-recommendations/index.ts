@@ -1,7 +1,16 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
+const openRouterApiKey = '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';
+if (!openRouterApiKey) {
+  serve(() => new Response(JSON.stringify({ error: "Missing OpenRouter API key" }), {
+    status: 500,
+    headers: corsHeaders,
+  }));
+  // Return early so the rest of the function is not executed
+  // (serve will handle the request with the above handler)
+  // This is a workaround for Deno/Supabase Edge runtime
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,6 +20,22 @@ const corsHeaders = {
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // Allow unauthenticated requests in local development
+  const host = req.headers.get("host") || "";
+  const isLocal =
+    host.includes("127.0.0.1") ||
+    host.includes("localhost") ||
+    host.includes("0.0.0.0") ||
+    host.includes("[::1]");
+  const authHeader = req.headers.get("authorization");
+
+  if (!authHeader && !isLocal) {
+    return new Response(JSON.stringify({ msg: "Error: Missing authorization header" }), {
+      status: 401,
+      headers: corsHeaders,
+    });
   }
 
   try {
